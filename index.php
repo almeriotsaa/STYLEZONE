@@ -27,7 +27,8 @@
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
-            z-index: 1;
+            z-index: 2;
+            font-family: "Didot", serif;
         }
 
         .navbar.scrolled {
@@ -85,7 +86,6 @@
             background-color: transparent;
             color: white;
             border: 1px solid white;
-            text-transform: uppercase;
             letter-spacing: 1px;
             padding: 4px 20px;
             font-weight: 500;
@@ -132,6 +132,7 @@
             background-color: #fff;
             box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
             transition: right 0.4s ease;
+            font-family: "Didot", serif;
             z-index: 999;
             display: flex;
             flex-direction: column;
@@ -152,7 +153,7 @@
         }
 
         .cart-header h4 {
-            font-family: 'Playfair Display', serif;
+            text-transform: uppercase;
             font-size: 1.2rem;
             letter-spacing: 1px;
         }
@@ -231,7 +232,7 @@
             padding: 12px;
             border: none;
             border-radius: 0;
-            font-family: 'Playfair Display', serif;
+            text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
             transition: background 0.3s ease;
@@ -248,6 +249,8 @@
             align-items: center;
             justify-content: center;
             color: white;
+            font-family: "Didot", serif;
+            text-transform: uppercase;
             text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.7);
             position: relative;
         }
@@ -264,8 +267,9 @@
             border-radius: 0;
             padding: 12px 28px;
             font-size: 0.95rem;
-            letter-spacing: 1px;
+            font-family: "Didot", serif;
             text-transform: uppercase;
+            letter-spacing: 1px;
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
@@ -284,7 +288,8 @@
             border: none;
             background: none;
             position: relative;
-            text-transform: capitalize;
+            font-family: "Didot", serif;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
             padding: 6px 18px;
             transition: all 0.3s ease;
@@ -310,9 +315,10 @@
             font-weight: 500;
             font-size: 16px;
             border-radius: 0;
-            /* Tidak ada lengkungan */
             padding: 8px 20px;
             margin: 0 6px;
+            font-family: "Didot", serif;
+            text-transform: uppercase;
             text-decoration: none;
             display: inline-block;
             transition: all 0.2s ease-in-out;
@@ -320,6 +326,7 @@
 
         .product-category-tabs .product-tab.active {
             background-color: #000;
+            font-family: "Didot", serif;
             color: #fff;
         }
 
@@ -347,24 +354,23 @@
 
         .product-name {
             font-size: 13px;
+            font-family: "Didot", serif;
             text-transform: uppercase;
             margin-top: 8px;
             color: #000;
         }
 
-        .product-details {
-            font-size: 12px;
-            color: #777;
-        }
-
         .product-price {
             font-size: 13px;
+            font-family: "Didot", serif;
+            text-transform: uppercase;
             color: #000;
         }
 
         .section-title {
             text-align: center;
             text-transform: uppercase;
+            font-family: "Didot", serif;
             letter-spacing: 3px;
             font-size: 1.8rem;
             margin-bottom: 30px;
@@ -374,6 +380,8 @@
         footer a {
             text-decoration: none;
             color: #ddd;
+            font-family: "Didot", serif;
+            text-transform: uppercase;
         }
 
         footer a:hover {
@@ -426,34 +434,21 @@
 
                 <div class="modal-body">
                     <form>
-                        <!-- EMAIL -->
                         <div class="mb-4">
-                            <label class="form-label" for="emailInput">EMAIL ADDRESS</label>
-                            <input type="email" id="emailInput" class="form-control" placeholder="ENTER YOUR EMAIL" />
+                            <label class="form-label" for="emailInput">Email Address</label>
+                            <input type="email" id="emailInput" class="form-control" placeholder="Enter your email" />
                         </div>
 
-                        <!-- PASSWORD -->
                         <div class="mb-4">
-                            <label class="form-label" for="passwordInput">PASSWORD</label>
+                            <label class="form-label" for="passwordInput">Password</label>
                             <input type="password" id="passwordInput" class="form-control"
-                                placeholder="ENTER YOUR PASSWORD" />
+                                placeholder="Enter your password" />
                         </div>
 
-                        <!-- REMEMBER ME -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rememberMe" checked />
-                                <label class="form-check-label" for="rememberMe">REMEMBER ME</label>
-                            </div>
-                            <a href="#" class="text-decoration-none">FORGOT PASSWORD?</a>
-                        </div>
+                        <button type="button" class="btn btn-dark w-100 mb-3">Sign In</button>
 
-                        <!-- SUBMIT -->
-                        <button type="button" class="btn btn-dark w-100 mb-3">SIGN IN</button>
-
-                        <!-- REGISTER -->
                         <div class="text-center">
-                            <p>NOT A MEMBER? <a href="#">REGISTER</a></p>
+                            <p>Does not have an account? <a href="#">Register</a></p>
                         </div>
                     </form>
                 </div>
@@ -730,7 +725,7 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <p class="mb-0">&copy; 2025 LOGO SHOP. ALL RIGHTS RESERVED.</p>
+                <p class="mb-0">&copy; 2025 STYLEZONE. ALL RIGHTS RESERVED.</p>
             </div>
         </div>
     </footer>
