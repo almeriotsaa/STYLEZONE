@@ -1,3 +1,20 @@
+<?php
+// ===== Koneksi ke Database =====
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db   = "ecommerce";
+
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+  die("Koneksi gagal: " . $conn->connect_error);
+}
+
+// ===== Ambil Data Users =====
+$sql = "SELECT * FROM users ORDER BY user_id ASC";
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +24,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     /* ===== General Styles ===== */
+    
+    * {
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: #f4f5f7;
@@ -95,15 +118,6 @@
       background: rgba(255,255,255,0.25);
     }
 
-    /* ===== User Avatar ===== */
-    .user-avatar {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(0,0,0,0.1);
-    }
-
     /* ===== Buttons ===== */
     .btn {
       padding: 7px 12px;
@@ -140,31 +154,6 @@
       gap: 8px;
       align-items: center;
     }
-
-    /* ===== Status Badge ===== */
-    .status {
-      display: inline-block;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 6px 10px;
-      border-radius: 8px;
-    }
-
-    .status.active {
-      background: rgba(76, 175, 80, 0.15);
-      color: #2e7d32;
-    }
-
-    .status.inactive {
-      background: rgba(244, 67, 54, 0.15);
-      color: #c62828;
-    }
-
-    .status.pending {
-      background: rgba(255, 193, 7, 0.15);
-      color: #f57f17;
-    }
-
   </style>
 </head>
 <body>
@@ -196,42 +185,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Michael Santoso</td>
-            <td>michael@example.com</td>
-            <td>Admin</td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn btn-edit">Edit</button>
-                <button class="btn btn-delete">Delete</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Jessica Putri</td>
-            <td>jessica@example.com</td>
-            <td>Customer</td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn btn-edit">Edit</button>
-                <button class="btn btn-delete">Delete</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Andi Pratama</td>
-            <td>andi@example.com</td>
-            <td>Customer</td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn btn-edit">Edit</button>
-                <button class="btn btn-delete">Delete</button>
-              </div>
-            </td>
-          </tr>
+          <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+              <tr>
+                <td><?= $row['user_id'] ?></td>
+                <td><?= htmlspecialchars($row['name']) ?></td>
+                <td><?= htmlspecialchars($row['email']) ?></td>
+                <td><?= ucfirst($row['role']) ?></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-delete">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="5" style="text-align:center;">No users found.</td>
+            </tr>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
@@ -239,3 +212,5 @@
 
 </body>
 </html>
+
+<?php $conn->close(); ?>

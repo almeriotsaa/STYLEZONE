@@ -1,3 +1,30 @@
+<?php
+// Koneksi ke database
+$host = "localhost";
+$user = "root";
+$pass = "";
+$dbname = "ecommerce";
+
+$conn = new mysqli($host, $user, $pass, $dbname);
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// Query total data untuk card overview
+$totalProducts = $conn->query("SELECT COUNT(*) AS total FROM products")->fetch_assoc()['total'];
+$totalUsers = $conn->query("SELECT COUNT(*) AS total FROM users")->fetch_assoc()['total'];
+$totalOrders = $conn->query("SELECT COUNT(*) AS total FROM orders")->fetch_assoc()['total'];
+
+// Query recent orders
+$sql = "
+  SELECT o.order_id, u.name AS customer, o.order_date, o.total, o.status
+  FROM orders o
+  JOIN users u ON o.user_id = u.user_id
+  ORDER BY o.order_date DESC
+  LIMIT 5
+";
+$recentOrders = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,30 +33,45 @@
   <title>Dashboard | Stylezone Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    * {
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: #f4f5f7;
-      margin: 0;
-      padding: 0;
       display: flex;
+      min-height: 100vh;
     }
 
-    /* Sidebar */
     .sidebar {
       width: 260px;
       background: #1e1e1e;
       color: #fff;
       padding: 30px 20px;
       box-sizing: border-box;
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .sidebar h2 {
-      margin-bottom: 40px;
       font-weight: 700;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 30px;
     }
 
     .logout-btn {
@@ -46,15 +88,6 @@
       font-size: 14px;
     }
 
-    .logout-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .logout-btn:active {
-      transform: translateY(0);
-    }
-
     .nav-item {
       display: block;
       padding: 10px 15px;
@@ -65,25 +98,25 @@
       transition: 0.3s;
     }
 
-    .nav-item.active, .nav-item:hover {
+    .nav-item.active,
+    .nav-item:hover {
       background: rgba(255,255,255,0.1);
       color: #fff;
     }
 
-    /* Main Content */
     .main {
       flex: 1;
+      margin-left: 260px;
       padding: 30px;
+      box-sizing: border-box;
+      width: calc(100% - 260px);
     }
 
     .glass-box {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: #fff;
       border-radius: 20px;
       padding: 25px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      border: 1px solid rgba(255, 255, 255, 0.3);
       margin-bottom: 25px;
     }
 
@@ -93,7 +126,6 @@
       color: #222;
     }
 
-    /* Cards */
     .card-container {
       display: flex;
       gap: 20px;
@@ -104,11 +136,9 @@
     .card {
       flex: 1;
       min-width: 250px;
-      background: rgba(255, 255, 255, 0.2);
+      background: #fff;
       border-radius: 20px;
       padding: 20px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.3);
       text-align: center;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
@@ -125,7 +155,6 @@
       color: #111;
     }
 
-    /* Table */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -147,7 +176,7 @@
     }
 
     tr:hover {
-      background: rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.02);
     }
 
     .status {
@@ -166,47 +195,30 @@
       background: rgba(241, 196, 15, 0.2);
       color: #f39c12;
     }
-
+    
   </style>
 </head>
 <body>
-
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>STYLEZONE
-      <button class="logout-btn" onclick="logout()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5a.5.5 0 0 0 0 1h9.293l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-        </svg>
-        Logout
-      </button>
-    </h2>
-    <a href="dashboard.php" class="nav-item active">🏠 Dashboard</a>
-    <a href="products.php" class="nav-item">🛍️ Products</a>
-    <a href="users.php" class="nav-item">👤 Users</a>
-    <a href="orders.php" class="nav-item">📦 Orders</a>
-    <a href="settings.php" class="nav-item">⚙️ Settings</a>
+    <div>
+      <h2>STYLEZONE
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </h2>
+      <a href="dashboard.php" class="nav-item active">🏠 Dashboard</a>
+      <a href="products.php" class="nav-item">🛍️ Products</a>
+      <a href="users.php" class="nav-item">👤 Users</a>
+      <a href="orders.php" class="nav-item">📦 Orders</a>
+      <a href="settings.php" class="nav-item">⚙️ Settings</a>
+    </div>
   </div>
 
-  <!-- Main -->
   <div class="main">
     <div class="glass-box">
       <h1>Dashboard Overview</h1>
-
       <div class="card-container">
-        <div class="card">
-          <h2>Total Products</h2>
-          <p>8</p>
-        </div>
-        <div class="card">
-          <h2>Users</h2>
-          <p>2</p>
-        </div>
-        <div class="card">
-          <h2>Total Orders</h2>
-          <p>2</p>
-        </div>
+        <div class="card"><h2>Total Products</h2><p><?= $totalProducts ?></p></div>
+        <div class="card"><h2>Users</h2><p><?= $totalUsers ?></p></div>
+        <div class="card"><h2>Total Orders</h2><p><?= $totalOrders ?></p></div>
       </div>
 
       <h1>Recent Orders</h1>
@@ -221,20 +233,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>#12345</td>
-            <td>John Doe</td>
-            <td>Oct 13, 2025</td>
-            <td>199.000 IDR</td>
-            <td><span class="status completed">completed</span></td>
-          </tr>
-          <tr>
-            <td>#12346</td>
-            <td>Jane Smith</td>
-            <td>Oct 12, 2025</td>
-            <td>199.000 IDR</td>
-            <td><span class="status pending">pending</span></td>
-          </tr>
+          <?php while ($row = $recentOrders->fetch_assoc()): ?>
+            <tr>
+              <td>#<?= $row['order_id'] ?></td>
+              <td><?= htmlspecialchars($row['customer']) ?></td>
+              <td><?= date('M d, Y', strtotime($row['order_date'])) ?></td>
+              <td><?= number_format($row['total'], 0, ',', '.') ?> IDR</td>
+              <td>
+                <span class="status <?= strtolower($row['status']) ?>">
+                  <?= ucfirst($row['status']) ?>
+                </span>
+              </td>
+            </tr>
+          <?php endwhile; ?>
         </tbody>
       </table>
     </div>
@@ -242,13 +253,10 @@
 
   <script>
     function logout() {
-      // Tambahkan logika logout di sini
       if (confirm('Are you sure you want to log out?')) {
-        // Redirect ke halaman login atau lakukan proses logout
         window.location.href = '../logout.php';
       }
     }
   </script>
-
 </body>
 </html>

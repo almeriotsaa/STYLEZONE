@@ -7,6 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
+
+    * {
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+    
     body {
       font-family: 'Poppins', sans-serif;
       background: #f4f5f7;

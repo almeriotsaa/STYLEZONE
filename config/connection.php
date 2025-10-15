@@ -2,7 +2,7 @@
 $host = "localhost";   // biasanya 'localhost'
 $user = "root";        // username default di XAMPP
 $pass = "";            // password default kosong
-$db   = "stylezone_db";     // nama database kamu
+$db   = "ecommerce";     // nama database kamu
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 
