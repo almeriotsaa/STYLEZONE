@@ -10,6 +10,47 @@ if ($conn->connect_error) {
   die("Koneksi gagal: " . $conn->connect_error);
 }
 
+// ===== Hapus User =====
+if (isset($_GET['delete'])) {
+  $id = intval($_GET['delete']);
+  $deleteQuery = "DELETE FROM users WHERE user_id = $id";
+  if ($conn->query($deleteQuery)) {
+    echo "<script>alert('User berhasil dihapus!'); window.location='users.php';</script>";
+  } else {
+    echo "<script>alert('Gagal menghapus user: " . $conn->error . "');</script>";
+  }
+}
+
+// ===== Tambah User =====
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
+  $id    = (int) $_POST['user_id'];
+  $name  = $conn->real_escape_string($_POST['name']);
+  $email = $conn->real_escape_string($_POST['email']);
+  $role  = $conn->real_escape_string($_POST['role']);
+
+  $sql = "INSERT INTO users (user_id, name, email, role) VALUES ('$id', '$name', '$email', '$role')";
+  if ($conn->query($sql)) {
+    echo "<script>alert('User berhasil ditambahkan!'); window.location='users.php';</script>";
+  } else {
+    echo "<script>alert('Gagal menambah user: " . $conn->error . "');</script>";
+  }
+}
+
+// ===== Edit User =====
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
+  $id    = (int) $_POST['user_id'];
+  $name  = $conn->real_escape_string($_POST['name']);
+  $email = $conn->real_escape_string($_POST['email']);
+  $role  = $conn->real_escape_string($_POST['role']);
+
+  $sql = "UPDATE users SET name='$name', email='$email', role='$role' WHERE user_id='$id'";
+  if ($conn->query($sql)) {
+    echo "<script>alert('Data user berhasil diperbarui!'); window.location='users.php';</script>";
+  } else {
+    echo "<script>alert('Gagal memperbarui user: " . $conn->error . "');</script>";
+  }
+}
+
 // ===== Ambil Data Users =====
 $sql = "SELECT * FROM users ORDER BY user_id ASC";
 $result = $conn->query($sql);
@@ -23,13 +64,6 @@ $result = $conn->query($sql);
   <title>Users | Stylezone Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* ===== General Styles ===== */
-    
-    * {
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-    }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: #f4f5f7;
@@ -38,7 +72,6 @@ $result = $conn->query($sql);
       display: flex;
     }
 
-    /* ===== Sidebar ===== */
     .sidebar {
       width: 260px;
       background: #1e1e1e;
@@ -68,7 +101,6 @@ $result = $conn->query($sql);
       color: #fff;
     }
 
-    /* ===== Main ===== */
     .main {
       flex: 1;
       padding: 30px;
@@ -90,12 +122,10 @@ $result = $conn->query($sql);
       color: #222;
     }
 
-    /* ===== Table ===== */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      table-layout: auto;
     }
 
     th, td {
@@ -118,7 +148,6 @@ $result = $conn->query($sql);
       background: rgba(255,255,255,0.25);
     }
 
-    /* ===== Buttons ===== */
     .btn {
       padding: 7px 12px;
       border: none;
@@ -129,36 +158,66 @@ $result = $conn->query($sql);
       font-size: 13px;
     }
 
-    .btn-add {
-      background: #4CAF50;
-      color: white;
-      margin-bottom: 15px;
-    }
+    .btn-add { background: #4CAF50; color: white; margin-bottom: 15px; }
+    .btn-edit { background: #2196F3; color: white; }
+    .btn-delete { background: #f44336; color: white; }
+    .btn:hover { opacity: 0.85; }
 
-    .btn-edit {
-      background: #2196F3;
-      color: white;
-    }
+    .action-buttons { display: flex; gap: 8px; align-items: center; }
 
-    .btn-delete {
-      background: #f44336;
-      color: white;
-    }
-
-    .btn:hover {
-      opacity: 0.85;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 8px;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
       align-items: center;
+      z-index: 1000;
     }
+
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h2 { margin-top: 0; margin-bottom: 20px; font-size: 20px; }
+
+    .form-group { margin-bottom: 15px; }
+
+    .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #333; }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+    .btn-cancel, .btn-submit {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      width: 90px;
+      height: 38px;
+    }
+
+    .btn-cancel { background: #ccc; color: #333; }
+    .btn-submit { background: #4CAF50; color: #fff; }
   </style>
 </head>
 <body>
 
-  <!-- ===== Sidebar ===== -->
   <div class="sidebar">
     <h2>STYLEZONE</h2>
     <a href="dashboard.php" class="nav-item">🏠 Dashboard</a>
@@ -168,11 +227,10 @@ $result = $conn->query($sql);
     <a href="settings.php" class="nav-item">⚙️ Settings</a>
   </div>
 
-  <!-- ===== Main Content ===== -->
   <div class="main">
     <div class="glass-box">
       <h1>Manage Users</h1>
-      <button class="btn btn-add">+ Add User</button>
+      <button class="btn btn-add" id="openModalAdd">+ Add User</button>
 
       <table>
         <thead>
@@ -194,22 +252,93 @@ $result = $conn->query($sql);
                 <td><?= ucfirst($row['role']) ?></td>
                 <td>
                   <div class="action-buttons">
-                    <button class="btn btn-edit">Edit</button>
-                    <button class="btn btn-delete">Delete</button>
+                    <button class="btn btn-edit" 
+                      onclick="openEditModal(<?= $row['user_id'] ?>, '<?= htmlspecialchars($row['name']) ?>', '<?= htmlspecialchars($row['email']) ?>', '<?= $row['role'] ?>')">Edit</button>
+                    <button class="btn btn-delete" onclick="confirmDelete(<?= $row['user_id'] ?>)">Delete</button>
                   </div>
                 </td>
               </tr>
             <?php endwhile; ?>
           <?php else: ?>
-            <tr>
-              <td colspan="5" style="text-align:center;">No users found.</td>
-            </tr>
+            <tr><td colspan="5" style="text-align:center;">No users found.</td></tr>
           <?php endif; ?>
         </tbody>
       </table>
     </div>
   </div>
 
+  <!-- Modal Add -->
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <h2>Add New User</h2>
+      <form method="POST">
+        <div class="form-group"><label>ID</label><input type="number" name="user_id" required></div>
+        <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+        <div class="form-group"><label>Role</label>
+          <select name="role" required>
+            <option value="">Select role</option>
+            <option value="admin">Admin</option>
+            <option value="customer">Customer</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal('addModal')">Cancel</button>
+          <button type="submit" name="add_user" class="btn-submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h2>Edit User</h2>
+      <form method="POST">
+        <div class="form-group"><label>ID</label><input type="number" name="user_id" id="edit_id" readonly></div>
+        <div class="form-group"><label>Name</label><input type="text" name="name" id="edit_name" required></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" id="edit_email" required></div>
+        <div class="form-group"><label>Role</label>
+          <select name="role" id="edit_role" required>
+            <option value="admin">Admin</option>
+            <option value="customer">Customer</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" name="edit_user" class="btn-submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    document.getElementById('openModalAdd').onclick = () => {
+      document.getElementById('addModal').style.display = 'flex';
+    };
+
+    function openEditModal(id, name, email, role) {
+      document.getElementById('editModal').style.display = 'flex';
+      document.getElementById('edit_id').value = id;
+      document.getElementById('edit_name').value = name;
+      document.getElementById('edit_email').value = email;
+      document.getElementById('edit_role').value = role;
+    }
+
+    window.onclick = function(e) {
+      if (e.target.classList.contains('modal')) e.target.style.display = 'none';
+    }
+
+    function confirmDelete(id) {
+      if (confirm('Yakin ingin menghapus user ini?')) {
+        window.location = 'users.php?delete=' + id;
+      }
+    }
+  </script>
 </body>
 </html>
 
