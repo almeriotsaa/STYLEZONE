@@ -21,11 +21,38 @@
       color: #fff;
       padding: 30px 20px;
       box-sizing: border-box;
+      position: relative;
     }
 
     .sidebar h2 {
       margin-bottom: 40px;
       font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
     }
 
     .nav-item {
@@ -146,7 +173,15 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>STYLEZONE</h2>
+    <h2>STYLEZONE
+      <button class="logout-btn" onclick="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5a.5.5 0 0 0 0 1h9.293l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+        </svg>
+        Logout
+      </button>
+    </h2>
     <a href="dashboard.php" class="nav-item active">🏠 Dashboard</a>
     <a href="products.php" class="nav-item">🛍️ Products</a>
     <a href="users.php" class="nav-item">👤 Users</a>
@@ -204,6 +239,16 @@
       </table>
     </div>
   </div>
+
+  <script>
+    function logout() {
+      // Tambahkan logika logout di sini
+      if (confirm('Are you sure you want to log out?')) {
+        // Redirect ke halaman login atau lakukan proses logout
+        window.location.href = '../logout.php';
+      }
+    }
+  </script>
 
 </body>
 </html>

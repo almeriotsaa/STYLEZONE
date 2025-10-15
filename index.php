@@ -1,3 +1,17 @@
+<?php
+session_start();
+include "./config/connection.php";
+
+if (isset($_SESSION['role'])) {
+    if ($_SESSION['role'] == 'admin') {
+        header("Location: ./admin_web/dashboard.php");
+        exit();
+    }
+}
+$query = "SELECT * FROM products";
+$result = mysqli_query($conn, $query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,385 +23,7 @@
     <!-- BOOTSTRAP & ICONS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
-
-    <style>
-        * {
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-        }
-
-        body {
-            background-color: #f8f9fa;
-            font-family: "Didot", serif;
-        }
-
-        /* 🌈 GLASS EFFECT NAVBAR */
-        .glass-navbar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            z-index: 2;
-            font-family: "Didot", serif;
-        }
-
-        .navbar.scrolled {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease-in-out;
-        }
-
-        /* 🖋 BRAND */
-        .navbar-brand {
-            color: #fff !important;
-            letter-spacing: 0.5px;
-        }
-
-        /* 🧭 NAV LINKS */
-        .nav-link {
-            color: #f8f9fa !important;
-            margin: 0 10px;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        .nav-link::after {
-            content: "";
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            background: white;
-            bottom: -3px;
-            left: 0;
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: white !important;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        /* 🛍 ICONS */
-        .icon-btn {
-            color: #fff;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-        }
-
-        .icon-btn:hover {
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .btn-login {
-            background-color: transparent;
-            color: white;
-            border: 1px solid white;
-            letter-spacing: 1px;
-            padding: 4px 20px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border-radius: 0;
-        }
-
-        .btn-login:hover {
-            transform: scale(1.1);
-        }
-
-
-        .modal-content {
-            border-radius: 0 !important;
-        }
-
-        /* Tombol buka cart */
-        .cart-btn {
-            position: fixed;
-            right: 30px;
-            bottom: 30px;
-            background-color: #000;
-            color: #fff;
-            font-size: 20px;
-            padding: 12px 16px;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 1000;
-            transition: background 0.3s ease;
-        }
-
-        .cart-btn:hover {
-            background-color: #333;
-        }
-
-        /* Sidebar cart */
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100%;
-            background-color: #fff;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-            transition: right 0.4s ease;
-            font-family: "Didot", serif;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .cart-sidebar.active {
-            right: 0;
-        }
-
-        /* Header */
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .cart-header h4 {
-            text-transform: uppercase;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-        }
-
-        .close-cart {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #555;
-        }
-
-        /* Item list */
-        .cart-items {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 15px 20px;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .cart-item img {
-            width: 70px;
-            height: auto;
-            margin-right: 15px;
-        }
-
-        .item-details {
-            flex: 1;
-        }
-
-        .item-name {
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .item-price {
-            color: #555;
-            font-size: 0.85rem;
-        }
-
-        .remove-item {
-            background: none;
-            border: none;
-            font-size: 22px;
-            color: #999;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .remove-item:hover {
-            color: #000;
-        }
-        
-        .cart-footer {
-            border-top: 1px solid #ddd;
-            padding: 20px;
-        }
-
-        .cart-footer .total {
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .cart-footer .btn-checkout {
-            width: 100%;
-            background-color: #000;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            border-radius: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .cart-footer .btn-checkout:hover {
-            background-color: #333;
-        }
-
-        /* 🦸 HERO SECTION */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-            text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.7);
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-        }
-
-        .btn-shop-now {
-            background-color: #000;
-            color: #fff;
-            border: none;
-            border-radius: 0;
-            padding: 12px 28px;
-            font-size: 0.95rem;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .btn-shop-now:hover {
-            letter-spacing: 1.5px;
-            transform: scale(1.1);
-        }
-
-        /* 🌸 GENDER TABS */
-        .category-gender .category-btn {
-            color: #777;
-            font-size: 15px;
-            font-weight: 500;
-            border: none;
-            background: none;
-            position: relative;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 6px 18px;
-            transition: all 0.3s ease;
-        }
-
-        .category-gender .category-btn.active {
-            color: #000;
-        }
-
-        .category-gender .category-btn.active::after {
-            content: "";
-            position: absolute;
-            bottom: -2px;
-            left: 30%;
-            width: 40%;
-            height: 2px;
-            background-color: #444;
-        }
-
-        /* 🖤 PRODUCT CATEGORY TABS */
-        .product-category-tabs .product-tab {
-            color: #000;
-            font-weight: 500;
-            font-size: 16px;
-            border-radius: 0;
-            padding: 8px 20px;
-            margin: 0 6px;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .product-category-tabs .product-tab.active {
-            background-color: #000;
-            font-family: "Didot", serif;
-            color: #fff;
-        }
-
-        .product-category-tabs .product-tab:hover {
-            background-color: #e5e5e5;
-            color: #000;
-        }
-
-        .product-card {
-            border: none;
-            background-color: transparent;
-            text-align: left;
-        }
-
-        .product-card img {
-            width: 100%;
-            height: auto;
-            transition: all 0.3s ease;
-        }
-
-        .product-card img:hover {
-            opacity: 0.9;
-            transform: scale(1.01);
-        }
-
-        .product-name {
-            font-size: 13px;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-            margin-top: 8px;
-            color: #000;
-        }
-
-        .product-price {
-            font-size: 13px;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-            color: #000;
-        }
-
-        .section-title {
-            text-align: center;
-            text-transform: uppercase;
-            font-family: "Didot", serif;
-            letter-spacing: 3px;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-        }
-
-        /* 🦶 FOOTER */
-        footer a {
-            text-decoration: none;
-            color: #ddd;
-            font-family: "Didot", serif;
-            text-transform: uppercase;
-        }
-
-        footer a:hover {
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="./style/style.css">
 </head>
 
 <body>
@@ -406,18 +42,35 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="#">HOME</a></li>
                     <li class="nav-item"><a class="nav-link" href="#shop">SHOP</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#deals">NEW ARRIVAL</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#new_arrival">ABOUT</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#new_arrival">NEW ARRIVAL</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">ABOUT</a></li>
                 </ul>
 
                 <!-- RIGHT ICONS -->
                 <div class="d-flex align-items-center gap-3">
                     <a href="#" class="icon-btn"><i class="bi bi-search"></i></a>
                     <a href="#" id="openCart" class="icon-btn"><i class="bi bi-cart3"></i></a>
-                    <button type="button" class="btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        LOGIN
-                    </button>
 
+                    <?php if (!isset($_SESSION['role'])): ?>
+                        <button type="button" class="btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">LOGIN</button>
+                    <?php else: ?>
+                        <!-- Profile Dropdown -->
+                        <div class="profile-dropdown">
+                            <button class="profile-btn" id="profileDropdown">
+                                <i class="bi bi-person-circle"></i>
+                            </button>
+                            <div class="dropdown-menu" id="dropdownMenu">
+                                <a href="profile.php" class="dropdown-item">
+                                    <i class="bi bi-person"></i> MY PROFILE
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="logout.php" class="dropdown-item" style="color: red;">
+                                    <i class="bi bi-box-arrow-right"></i> LOG OUT
+                                </a>
+                            </div>
+                        </div>
+
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -433,24 +86,25 @@
                 </div>
 
                 <div class="modal-body">
-                    <form>
+                    <form action="./config/login.php" method="POST">
                         <div class="mb-4">
                             <label class="form-label" for="emailInput">Email Address</label>
-                            <input type="email" id="emailInput" class="form-control" placeholder="Enter your email" />
+                            <input type="email" name="email" id="emailInput" class="form-control" placeholder="Enter your email" required />
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label" for="passwordInput">Password</label>
-                            <input type="password" id="passwordInput" class="form-control"
-                                placeholder="Enter your password" />
+                            <input type="password" name="password" id="passwordInput" class="form-control"
+                                placeholder="Enter your password" required />
                         </div>
 
-                        <button type="button" class="btn btn-dark w-100 mb-3">Sign In</button>
+                        <button type="submit" class="btn btn-dark w-100 mb-3">Sign In</button>
 
                         <div class="text-center">
                             <p>Does not have an account? <a href="#">Register</a></p>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -501,7 +155,7 @@
         <div class="text-center">
             <h1>DISCOVER YOUR STYLE</h1>
             <p class="lead mb-4 text-uppercase">TRENDY FASHION & ACCESSORIES WITH EXCLUSIVE DISCOUNTS</p>
-            <a href="#" class="btn-shop-now">SHOP NOW</a>
+            <a href="#shop" class="btn-shop-now">SHOP NOW</a>
         </div>
     </div>
 
@@ -630,71 +284,23 @@
     <!-- 🛒 PRODUCT SECTION -->
     <div class="container py-5" id="shop">
         <div class="row g-4">
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://static.zara.net/assets/public/5a2d/d6f1/ae90430fbf6b/a6b46ff892ea/05644385250-a1/05644385250-a1.jpg?ts=1759836082573&w=472"
-                        class="card-img-top" alt="PRODUCT 1">
-                    <div class="card-body p-0 mt-2">
-                        <p class="product-name">KAUS OBLONG BERKERAH KANCING BERTEKSTUR</p>
-                        <p class="product-price">759.900 IDR</p>
+            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                <div class="col-md-4 col-sm-6">
+                    <div class="product-card">
+                        <img
+                            src="<?= htmlspecialchars($row['image']); ?>"
+                            alt="<?= htmlspecialchars($row['name_product']); ?>"
+                            class="img-fluid">
+                        <p class="product-name"><?= htmlspecialchars($row['name_product']); ?></p>
+                        <p class="product-price"><?= number_format($row['price'], 0, ',', '.'); ?> IDR</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://static.zara.net/assets/public/5a2d/d6f1/ae90430fbf6b/a6b46ff892ea/05644385250-a1/05644385250-a1.jpg?ts=1759836082573&w=472"
-                        class="card-img-top" alt="PRODUCT 2">
-                    <div class="card-body p-0 mt-2">
-                        <p class="product-name">T-SHIRT LIGHTWEIGHT LENGAN PANJANG</p>
-                        <p class="product-price">759.900 IDR</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://static.zara.net/assets/public/5a2d/d6f1/ae90430fbf6b/a6b46ff892ea/05644385250-a1/05644385250-a1.jpg?ts=1759836082573&w=472"
-                        class="card-img-top" alt="PRODUCT 3">
-                    <div class="card-body p-0 mt-2">
-                        <p class="product-name">T-SHIRT LIGHTWEIGHT LENGAN PANJANG</p>
-                        <p class="product-price">759.900 IDR</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://static.zara.net/assets/public/5a2d/d6f1/ae90430fbf6b/a6b46ff892ea/05644385250-a1/05644385250-a1.jpg?ts=1759836082573&w=472"
-                        class="card-img-top" alt="PRODUCT 3">
-                    <div class="card-body p-0 mt-2">
-                        <p class="product-name">T-SHIRT LIGHTWEIGHT LENGAN PANJANG</p>
-                        <p class="product-price">759.900 IDR</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://static.zara.net/assets/public/5a2d/d6f1/ae90430fbf6b/a6b46ff892ea/05644385250-a1/05644385250-a1.jpg?ts=1759836082573&w=472"
-                        class="card-img-top" alt="PRODUCT 3">
-                    <div class="card-body p-0 mt-2">
-                        <p class="product-name">T-SHIRT LIGHTWEIGHT LENGAN PANJANG</p>
-                        <p class="product-price">759.900 IDR</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://static.zara.net/assets/public/5a2d/d6f1/ae90430fbf6b/a6b46ff892ea/05644385250-a1/05644385250-a1.jpg?ts=1759836082573&w=472"
-                        class="card-img-top" alt="PRODUCT 3">
-                    <div class="card-body p-0 mt-2">
-                        <p class="product-name">T-SHIRT LIGHTWEIGHT LENGAN PANJANG</p>
-                        <p class="product-price">759.900 IDR</p>
-                    </div>
-                </div>
-            </div>
+            <?php } ?>
         </div>
     </div>
 
     <!-- 🦶 FOOTER -->
-    <footer class="bg-dark text-light pt-5 pb-3 text-uppercase">
+    <footer class="bg-dark text-light pt-5 pb-3 text-uppercase" id="about">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3">
@@ -735,7 +341,7 @@
 
     <script>
         // NAVBAR SCROLL EFFECT
-        window.addEventListener("scroll", function () {
+        window.addEventListener("scroll", function() {
             const navbar = document.querySelector(".navbar");
             navbar.classList.toggle("scrolled", window.scrollY > 50);
         });
@@ -752,6 +358,27 @@
 
         closeCart.addEventListener("click", () => {
             cartSidebar.classList.remove("active");
+        });
+    </script>
+
+    <script>
+        // Profile Dropdown Functionality
+        const profileDropdown = document.getElementById("profileDropdown");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+
+        profileDropdown.addEventListener("click", function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle("show");
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function() {
+            dropdownMenu.classList.remove("show");
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        dropdownMenu.addEventListener("click", function(e) {
+            e.stopPropagation();
         });
     </script>
 
