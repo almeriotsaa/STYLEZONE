@@ -1,14 +1,5 @@
 <?php
-// ===== Koneksi ke Database =====
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "ecommerce";
-
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-  die("Koneksi gagal: " . $conn->connect_error);
-}
+include "../config/connection.php";
 
 // ===== Hapus User =====
 if (isset($_GET['delete'])) {

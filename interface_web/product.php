@@ -5,220 +5,252 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Detail | Stylezone</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #111;
+    /* Global Styles */
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: "Didot", serif;
     }
-
+    
+    body {
+      background: #fff;
+      color: #111;
+      line-height: 1.6;
+    }
+    
+    /* Header & Navigation */
+    .header {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    
     .navbar {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
-      padding: 20px 60px;
-      border-bottom: 1px solid #ddd;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
-
+    
     .logo {
       font-weight: bold;
+      font-size: 24px;
       letter-spacing: 1px;
     }
-
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: #111;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: #666;
+    }
+    
+    .user-actions {
+      display: flex;
+      gap: 20px;
+    }
+    
+    /* Product Page Layout */
     .product-page {
       display: flex;
       gap: 60px;
-      padding: 60px;
       max-width: 1200px;
-      margin: auto;
+      margin: 60px auto;
+      padding: 0 20px;
     }
-
+    
+    /* Product Gallery */
     .product-gallery {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
+    
     .main-image {
-      width: 80%;
+      width: 100%;
+      max-width: 500px;
       border-radius: 4px;
+      cursor: pointer;
       transition: transform 0.3s ease;
-      cursor: zoom-in;
     }
-
+    
     .main-image:hover {
-      transform: scale(1.02);
+      transform: scale(1.01);
     }
-
+    
     .thumbnail-list {
       display: flex;
       gap: 15px;
       margin-top: 20px;
       justify-content: center;
     }
-
+    
     .thumbnail-list img {
-      width: 90px;
-      height: 100px;
+      width: 80px;
+      height: 90px;
+      object-fit: cover;
       border: 1px solid #ddd;
       border-radius: 4px;
       cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      transition: all 0.2s ease;
     }
-
+    
     .thumbnail-list img:hover {
-      transform: scale(1.05);
       border-color: #000;
     }
-
+    
     .thumbnail-list img.active {
       border: 2px solid #000;
     }
-
+    
+    /* Product Info */
     .product-info {
       flex: 1;
       display: flex;
       flex-direction: column;
     }
-
+    
     .product-title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
-
+    
     .product-desc {
       font-size: 15px;
       color: #555;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       text-align: justify;
     }
-
+    
     .price-stock {
       display: flex;
       align-items: center;
       gap: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 25px;
       font-size: 16px;
     }
-
+    
     .price {
       font-weight: bold;
+      font-size: 20px;
       color: #000;
     }
-
+    
     .stock {
       color: #333;
+      font-size: 14px;
     }
-
-    .add-btn {
-      background: none;
-      border: 1px solid #000;
-      padding: 12px;
-      width: 180px;
-      cursor: pointer;
-      margin: 15px 0;
-      transition: 0.3s;
+    
+    /* Size Selection */
+    .size-section {
+      margin-bottom: 25px;
     }
-
-    .add-btn:hover {
-      background: #000;
-      color: #fff;
-    }
-
-    .size-options {
-      display: none;
-      margin-top: 10px;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .size-options p {
+    
+    .size-label {
+      display: block;
       margin-bottom: 10px;
       font-weight: bold;
     }
-
-    .sizes {
+    
+    .size-options {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
-
-    .sizes button {
-      border: 1px solid #000;
+    
+    .size-btn {
+      border: 1px solid #ddd;
       background: #fff;
       padding: 10px 18px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s;
+      font-size: 14px;
     }
-
-    .sizes button:hover,
-    .sizes button.active {
+    
+    .size-btn:hover {
+      border-color: #000;
+    }
+    
+    .size-btn.active {
       background: #000;
       color: #fff;
+      border-color: #000;
     }
-
-    .quantity-control {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      margin-top: 25px;
+    
+    /* Quantity Control */
+    .quantity-section {
       margin-bottom: 25px;
     }
-
-    .quantity-control button {
+    
+    .quantity-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .quantity-btn {
       width: 35px;
       height: 35px;
-      border: 1px solid #000;
+      border: 1px solid #ddd;
       background: #fff;
       font-size: 18px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s;
     }
-
-    .quantity-control button:hover {
-      background: #000;
-      color: #fff;
+    
+    .quantity-btn:hover {
+      background: #f5f5f5;
     }
-
-    .quantity-control span {
+    
+    .quantity-display {
       width: 40px;
       text-align: center;
-      font-weight: bold;
       font-size: 16px;
     }
-
+    
+    /* Add to Cart Button */
     .cart-btn {
-      display: none;
       background: #111;
       color: #fff;
       border: none;
-      padding: 14px;
-      width: 220px;
+      padding: 15px;
+      width: 100%;
+      max-width: 300px;
       font-size: 15px;
       cursor: pointer;
-      transition: 0.3s;
-      border-radius: 6px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s;
+      margin-top: 10px;
     }
-
+    
     .cart-btn:hover {
       background: #333;
-      transform: scale(1.04);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     }
-
-    /* Modal (popup image) */
+    
+    /* Modal for Image Zoom */
     .modal {
       display: none;
       position: fixed;
-      z-index: 9999;
+      z-index: 1000;
       left: 0;
       top: 0;
       width: 100%;
@@ -227,20 +259,14 @@
       justify-content: center;
       align-items: center;
     }
-
+    
     .modal-content {
       max-width: 80%;
       max-height: 80%;
-      border-radius: 8px;
-      cursor: zoom-in;
-      transition: transform 0.3s ease;
+      border-radius: 4px;
+      cursor: pointer;
     }
-
-    .modal-content.zoomed {
-      transform: scale(1.8);
-      cursor: zoom-out;
-    }
-
+    
     .close-btn {
       position: absolute;
       top: 30px;
@@ -251,38 +277,58 @@
       font-weight: bold;
       transition: 0.2s;
     }
-
+    
     .close-btn:hover {
       color: #ccc;
     }
-
+    
+    /* Responsive Design */
     @media (max-width: 900px) {
       .product-page {
         flex-direction: column;
-        padding: 30px;
+        gap: 30px;
+        margin: 30px auto;
       }
-      .add-btn, .cart-btn {
-        width: 100%;
+      
+      .navbar {
+        flex-direction: column;
+        gap: 15px;
       }
-      .main-image {
-        width: 100%;
+      
+      .nav-links {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .thumbnail-list img {
+        width: 60px;
+        height: 70px;
+      }
+      
+      .size-btn {
+        padding: 8px 12px;
       }
     }
   </style>
 </head>
 <body>
-  <header class="navbar">
-    <h1 class="logo">STYLEZONE</h1>
+  <header class="header">
+    <nav class="navbar">
+      <h1 class="logo">STYLEZONE</h1> 
+    </nav>
   </header>
 
   <main class="product-page">
     <section class="product-gallery">
-      <img id="mainImage" src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0000_cat.jpg" alt="Product" class="main-image" />
+      <img id="mainImage" src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0000_cat.jpg" alt="Polar Skate Co. Mitchell Flannel Shirt" class="main-image" />
 
       <div class="thumbnail-list">
-        <img class="active" src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0000_cat.jpg" alt="thumb1" />
-        <img src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0001_1.jpg" alt="thumb2" />
-        <img src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0002_2.jpg" alt="thumb3" />
+        <img class="active" src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0000_cat.jpg" alt="Flannel Shirt Front" />
+        <img src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0001_1.jpg" alt="Flannel Shirt Side" />
+        <img src="https://www.consortium.co.uk/media/catalog/product/cache/1/small_image/790x/040ec09b1e35df139433887a97daa66f/p/o/polar-skate-co-mitchell-flannel-shirt-blue-brown-psc-sp23-37_0002_2.jpg" alt="Flannel Shirt Back" />
       </div>
     </section>
 
@@ -297,24 +343,25 @@
         <span class="stock">Stock: 30</span>
       </div>
 
-      <button class="add-btn" id="addBtn">ADD</button>
-
-      <div class="size-options" id="sizeOptions">
-        <p>Select Size</p>
-        <div class="sizes">
-          <button>XS</button>
-          <button>S</button>
-          <button>M</button>
-          <button>L</button>
-          <button>XL</button>
-          <button>XXL</button>
+      <div class="size-section">
+        <span class="size-label">Select Size</span>
+        <div class="size-options">
+          <button class="size-btn">XS</button>
+          <button class="size-btn">S</button>
+          <button class="size-btn active">M</button>
+          <button class="size-btn">L</button>
+          <button class="size-btn">XL</button>
+          <button class="size-btn">XXL</button>
         </div>
       </div>
 
-      <div class="quantity-control" id="quantityControl">
-        <button id="minusBtn">-</button>
-        <span id="quantity">1</span>
-        <button id="plusBtn">+</button>
+      <div class="quantity-section">
+        <span class="quantity-label">Quantity</span>
+        <div class="quantity-control">
+          <button class="quantity-btn" id="minusBtn">-</button>
+          <span class="quantity-display" id="quantity">1</span>
+          <button class="quantity-btn" id="plusBtn">+</button>
+        </div>
       </div>
 
       <button class="cart-btn" id="cartBtn">Add to Cart</button>
@@ -324,24 +371,23 @@
   <!-- Modal for Image Zoom -->
   <div class="modal" id="imageModal">
     <span class="close-btn" id="closeModal">&times;</span>
-    <img class="modal-content" id="modalImg" alt="Zoomed Image">
+    <img class="modal-content" id="modalImg" alt="Zoomed Product Image">
   </div>
 
   <script>
+    // DOM Elements
     const mainImage = document.getElementById('mainImage');
     const thumbnails = document.querySelectorAll('.thumbnail-list img');
-    const addBtn = document.getElementById('addBtn');
-    const sizeOptions = document.getElementById('sizeOptions');
-    const sizeButtons = document.querySelectorAll('.sizes button');
+    const sizeButtons = document.querySelectorAll('.size-btn');
     const minusBtn = document.getElementById('minusBtn');
     const plusBtn = document.getElementById('plusBtn');
     const quantitySpan = document.getElementById('quantity');
     const cartBtn = document.getElementById('cartBtn');
-    const quantityControl = document.getElementById('quantityControl');
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
     const closeModal = document.getElementById('closeModal');
 
+    // Thumbnail switching
     thumbnails.forEach(thumb => {
       thumb.addEventListener('click', () => {
         thumbnails.forEach(img => img.classList.remove('active'));
@@ -350,20 +396,15 @@
       });
     });
 
-    addBtn.addEventListener('click', () => {
-      sizeOptions.style.display = 'block';
-      addBtn.style.display = 'none';
-    });
-
+    // Size selection
     sizeButtons.forEach(button => {
       button.addEventListener('click', () => {
         sizeButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
-        quantityControl.style.display = 'flex';
-        cartBtn.style.display = 'block';
       });
     });
 
+    // Quantity control
     let quantity = 1;
     plusBtn.addEventListener('click', () => {
       quantity++;
@@ -377,16 +418,17 @@
       }
     });
 
+    // Add to cart
     cartBtn.addEventListener('click', () => {
-      const selectedSize = document.querySelector('.sizes button.active');
+      const selectedSize = document.querySelector('.size-btn.active');
       if (!selectedSize) {
         alert('Please select a size before adding to cart.');
         return;
       }
-      alert(`Added ${quantity}x (${selectedSize.textContent}) to cart!`);
+      alert(`Added ${quantity}x ${selectedSize.textContent} size to cart!`);
     });
 
-    // Image popup
+    // Image modal
     mainImage.addEventListener('click', () => {
       modal.style.display = 'flex';
       modalImg.src = mainImage.src;
@@ -394,17 +436,15 @@
 
     closeModal.addEventListener('click', () => {
       modal.style.display = 'none';
-      modalImg.classList.remove('zoomed');
     });
 
     modalImg.addEventListener('click', () => {
-      modalImg.classList.toggle('zoomed');
+      modal.style.display = 'none';
     });
 
     window.addEventListener('click', (e) => {
       if (e.target === modal) {
         modal.style.display = 'none';
-        modalImg.classList.remove('zoomed');
       }
     });
   </script>

@@ -1,14 +1,5 @@
 <?php
-// Koneksi ke database
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "ecommerce";
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
+include "../config/connection.php";
 
 // Query total data untuk card overview
 $totalProducts = $conn->query("SELECT COUNT(*) AS total FROM products")->fetch_assoc()['total'];
