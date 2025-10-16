@@ -14,12 +14,15 @@ if (isset($_GET['delete'])) {
 
 // ===== Tambah User =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
-  $id    = (int) $_POST['user_id'];
   $name  = $conn->real_escape_string($_POST['name']);
   $email = $conn->real_escape_string($_POST['email']);
-  $role  = $conn->real_escape_string($_POST['role']);
+   $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
 
-  $sql = "INSERT INTO users (user_id, name, email, role) VALUES ('$id', '$name', '$email', '$role')";
+    
+  $role  = "admin";
+
+  $sql = "INSERT INTO users (name, email, password, role) 
+            VALUES ('$name', '$email', '$hashed_pass', '$role')";
   if ($conn->query($sql)) {
     echo "<script>alert('User berhasil ditambahkan!'); window.location='users.php';</script>";
   } else {
@@ -29,10 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 
 // ===== Edit User =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
-  $id    = (int) $_POST['user_id'];
   $name  = $conn->real_escape_string($_POST['name']);
   $email = $conn->real_escape_string($_POST['email']);
   $role  = $conn->real_escape_string($_POST['role']);
+  $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO users (name, email, password, role) 
+            VALUES ('$name', '$email', '$hashed_pass', '$role')";
 
   $sql = "UPDATE users SET name='$name', email='$email', role='$role' WHERE user_id='$id'";
   if ($conn->query($sql)) {
@@ -237,7 +243,7 @@ $result = $conn->query($sql);
           <?php if ($result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
               <tr>
-                <td><?= $row['user_id'] ?></td>
+                <td>#<?= $row['user_id'] ?></td>
                 <td><?= htmlspecialchars($row['name']) ?></td>
                 <td><?= htmlspecialchars($row['email']) ?></td>
                 <td><?= ucfirst($row['role']) ?></td>
@@ -263,16 +269,9 @@ $result = $conn->query($sql);
     <div class="modal-content">
       <h2>Add New User</h2>
       <form method="POST">
-        <div class="form-group"><label>ID</label><input type="number" name="user_id" required></div>
         <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
         <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-        <div class="form-group"><label>Role</label>
-          <select name="role" required>
-            <option value="">Select role</option>
-            <option value="admin">Admin</option>
-            <option value="customer">Customer</option>
-          </select>
-        </div>
+        <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
         <div class="modal-actions">
           <button type="button" class="btn-cancel" onclick="closeModal('addModal')">Cancel</button>
           <button type="submit" name="add_user" class="btn-submit">Add</button>
@@ -289,12 +288,6 @@ $result = $conn->query($sql);
         <div class="form-group"><label>ID</label><input type="number" name="user_id" id="edit_id" readonly></div>
         <div class="form-group"><label>Name</label><input type="text" name="name" id="edit_name" required></div>
         <div class="form-group"><label>Email</label><input type="email" name="email" id="edit_email" required></div>
-        <div class="form-group"><label>Role</label>
-          <select name="role" id="edit_role" required>
-            <option value="admin">Admin</option>
-            <option value="customer">Customer</option>
-          </select>
-        </div>
         <div class="modal-actions">
           <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
           <button type="submit" name="edit_user" class="btn-submit">Save</button>
