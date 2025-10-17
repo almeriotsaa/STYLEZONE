@@ -31,7 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_product'])) {
   $target_file = $target_dir . $image_name;
 
   if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-    $image_path = "uploads/" . $image_name;
+    // Buat link URL absolut (ubah sesuai path project kamu)
+    $base_url = "http://localhost/STYLEZONE/"; 
+    $image_path = $base_url . "uploads/" . $image_name;
   } else {
     die("<script>alert('Error uploading image.'); window.history.back();</script>");
   }
@@ -64,7 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['edit_product'])) {
     $image_name = basename($_FILES["image"]["name"]);
     $target_file = $target_dir . $image_name;
     if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-      $image_path = "uploads/" . $image_name;
+      $base_url = "http://localhost/STYLEZONE/"; 
+      $image_path = $base_url . "uploads/" . $image_name;
     }
   }
 
