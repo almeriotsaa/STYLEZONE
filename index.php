@@ -9,20 +9,20 @@ if (isset($_SESSION['role'])) {
     }
 }
 
-$gender = isset($_GET['gender']) ? $_GET['gender'] : 'Women'; // default Women
-$category_id = isset($_GET['category_id']) ? $_GET['category_id'] : 'all';
+// $gender = isset($_GET['gender']) ? $_GET['gender'] : 'Women'; // default Women
+// $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : 'all';
 
-// Query ambil kategori berdasarkan gender
-$category_query = "SELECT * FROM categories WHERE category_gender = '$gender'";
-$category_result = mysqli_query($conn, $category_query);
+// // Query ambil kategori berdasarkan gender
+// $category_query = "SELECT * FROM categories WHERE category_gender = '$gender'";
+// $category_result = mysqli_query($conn, $category_query);
 
-// Query produk berdasarkan filter
-if ($category_id == 'all') {
-    $product_query = "SELECT * FROM products WHERE gender = '$gender'";
-} else {
-    $product_query = "SELECT * FROM products WHERE gender = '$gender' AND category_id = '$category_id'";
-}
-$product_result = mysqli_query($conn, $product_query);
+// // Query produk berdasarkan filter
+// if ($category_id == 'all') {
+//     $product_query = "SELECT * FROM products WHERE gender = '$gender'";
+// } else {
+//     $product_query = "SELECT * FROM products WHERE gender = '$gender' AND category_id = '$category_id'";
+// }
+// $product_result = mysqli_query($conn, $product_query);
 
 $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
