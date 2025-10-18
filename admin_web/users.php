@@ -244,8 +244,8 @@ $result = $conn->query($sql);
     }
 
     .btn-cancel { 
-      background: #ccc; c
-      olor: #333; 
+      background: #ccc;
+      color: #333; 
 }
 
     .btn-submit { 
