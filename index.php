@@ -1,28 +1,12 @@
 <?php
 session_start();
+
 include "./config/connection.php";
 
-if (isset($_SESSION['role'])) {
-    if ($_SESSION['role'] == 'admin') {
-        header("Location: ./admin_web/dashboard.php");
-        exit();
-    }
+if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+    header("Location: ./admin_web/dashboard.php");
+    exit();
 }
-
-// $gender = isset($_GET['gender']) ? $_GET['gender'] : 'Women'; // default Women
-// $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : 'all';
-
-// // Query ambil kategori berdasarkan gender
-// $category_query = "SELECT * FROM categories WHERE category_gender = '$gender'";
-// $category_result = mysqli_query($conn, $category_query);
-
-// // Query produk berdasarkan filter
-// if ($category_id == 'all') {
-//     $product_query = "SELECT * FROM products WHERE gender = '$gender'";
-// } else {
-//     $product_query = "SELECT * FROM products WHERE gender = '$gender' AND category_id = '$category_id'";
-// }
-// $product_result = mysqli_query($conn, $product_query);
 
 $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
@@ -34,7 +18,7 @@ $result = mysqli_query($conn, $query);
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E-COMMERCE MODERN</title>
+    <title>STYLEZONE - FASHION</title>
 
     <!-- BOOTSTRAP & ICONS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -741,9 +725,6 @@ $result = mysqli_query($conn, $query);
                             alert('Your cart is empty!');
                             return;
                         }
-                        alert('Proceeding to checkout...');
-                        // Redirect to checkout page
-                        // window.location.href = 'checkout.php';
                     });
                 }
 
@@ -1172,7 +1153,7 @@ $result = mysqli_query($conn, $query);
                 paymentModal.hide();
 
                 // Tampilkan konfirmasi
-                alert('Payment successful! Thank you for your order.');
+                // alert('Payment successful! Thank you for your order.');
 
                 // Reset button
                 confirmPaymentBtn.disabled = false;
@@ -1181,7 +1162,153 @@ $result = mysqli_query($conn, $query);
             }, 2000);
         }
 
-        
+        // Fungsi untuk test session
+        async function testSession() {
+            try {
+                const response = await fetch('./config/test_session.php');
+                const data = await response.json();
+                console.log('Session Test:', data);
+                return data;
+            } catch (error) {
+                console.error('Session test failed:', error);
+                return null;
+            }
+        }
+
+        // Fungsi untuk memproses pembayaran - VERSI SIMPLE
+        // async function processPayment1() {
+        //     console.log('Starting payment process...');
+
+        //     const cart = getCart();
+        //     if (cart.length === 0) {
+        //         alert('Your cart is empty!');
+        //         return;
+        //     }
+
+        //     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        //     console.log('Payment method:', paymentMethod);
+
+        //     // Validasi form
+        //     if (!validatePaymentForm(paymentMethod)) {
+        //         return;
+        //     }
+
+        //     // Siapkan data
+        //     const paymentData = {
+        //         cart_items: cart.map(item => ({
+        //             product_id: parseInt(item.product_id),
+        //             quantity: parseInt(item.quantity),
+        //             price: parseFloat(item.price),
+        //             name: item.name,
+        //             size: item.size
+        //         })),
+        //         total_amount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+        //         payment_method: paymentMethod
+        //     };
+
+        //     console.log('Payment data:', paymentData);
+
+        //     // Tampilkan loading
+        //     const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+        //     const originalText = confirmPaymentBtn.innerHTML;
+        //     confirmPaymentBtn.disabled = true;
+        //     confirmPaymentBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+
+        //     try {
+        //         const response = await fetch('./config/process_payment.php', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify(paymentData)
+        //         });
+
+        //         const result = await response.json();
+        //         console.log('Payment response:', result);
+
+        //         if (result.success) {
+        //             // SUCCESS
+        //             saveCart([]); // Clear cart
+        //             updateCartUI();
+
+        //             // Close modal
+        //             const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+        //             paymentModal.hide();
+
+        //             // Show success message
+        //             showSuccessMessage(result.order_id, result.payment_id);
+        //         } else {
+        //             // Jika gagal karena session, redirect ke login
+        //             if (result.message.includes('login') || result.message.includes('session')) {
+        //                 alert('Session expired. Please login again.');
+        //                 window.location.reload();
+        //             } else {
+        //                 throw new Error(result.message);
+        //             }
+        //         }
+        //     } catch (error) {
+        //         console.error('Payment error:', error);
+        //         alert('Payment failed: ' + error.message);
+        //     } finally {
+        //         // Reset button
+        //         confirmPaymentBtn.disabled = false;
+        //         confirmPaymentBtn.innerHTML = originalText;
+        //     }
+        // }
+
+        // Fungsi validasi form
+        function validatePaymentForm(paymentMethod) {
+            switch (paymentMethod) {
+                case 'credit_card':
+                    const cardNumber = document.getElementById('cardNumber')?.value.trim();
+                    const expiryDate = document.getElementById('expiryDate')?.value.trim();
+                    const cvv = document.getElementById('cvv')?.value.trim();
+                    const cardHolder = document.getElementById('cardHolder')?.value.trim();
+
+                    if (!cardNumber || !expiryDate || !cvv || !cardHolder) {
+                        alert('Please fill all credit card fields');
+                        return false;
+                    }
+                    break;
+
+                case 'bank_transfer':
+                    if (!document.querySelector('.bank-option.selected')) {
+                        alert('Please select a bank');
+                        return false;
+                    }
+                    break;
+
+                case 'ewallet':
+                    if (!document.querySelector('.ewallet-option.selected')) {
+                        alert('Please select an e-wallet');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        // Fungsi tampilkan success message
+        function showSuccessMessage(orderId, paymentId) {
+            // Anda bisa menggunakan alert sederhana atau modal Bootstrap
+            alert(`Payment Successful!\n\nOrder ID: ${orderId}\nPayment ID: ${paymentId}\n\nThank you for your order!`);
+
+            // Atau gunakan modal Bootstrap yang lebih bagus
+            /*
+            const successHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading">Payment Successful!</h4>
+                    <p>Thank you for your order. Your order has been placed successfully.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <strong>Order ID:</strong> ${orderId}<br>
+                        <strong>Payment ID:</strong> ${paymentId}
+                    </p>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('afterbegin', successHTML);
+            */
+        }
     </script>
 </body>
 

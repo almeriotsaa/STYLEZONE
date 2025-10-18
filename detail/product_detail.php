@@ -192,7 +192,7 @@ mysqli_close($conn);
       font-size: 16px;
     }
 
-    .btn-checkout {
+    /* .btn-checkout {
       background: #111;
       color: white;
       border: none;
@@ -200,11 +200,11 @@ mysqli_close($conn);
       width: 100%;
       cursor: pointer;
       transition: background 0.3s;
-    }
+    } */
 
-    .btn-checkout:hover {
+    /* .btn-checkout:hover {
       background: #333;
-    }
+    } */
 
     .cart-overlay {
       position: fixed;
@@ -507,13 +507,13 @@ mysqli_close($conn);
 
     <div class="cart-footer">
       <p class="total">TOTAL: <span id="cartTotal">0 IDR</span></p>
-      <button class="btn-checkout" id="checkoutBtn">CHECKOUT</button>
+      <!-- <button class="btn-checkout" id="checkoutBtn">CHECKOUT</button> -->
     </div>
   </div>
 
   <header class="header">
     <nav class="navbar">
-      <a href="index.php" class="logo">STYLEZONE</a>
+      <a href="../index.php" class="logo">STYLEZONE</a>
       <div class="d-flex align-items-center gap-3">
         <a href="#" id="openCart" class="icon-btn">
           <i class="bi bi-cart3"></i>
@@ -670,7 +670,7 @@ mysqli_close($conn);
     const closeCartBtn = document.querySelector('.close-cart');
     const cartSidebar = document.getElementById('cartSidebar');
     const cartOverlay = document.getElementById('cartOverlay');
-    const checkoutBtn = document.getElementById('checkoutBtn');
+    // const checkoutBtn = document.getElementById('checkoutBtn');
 
     // Product data from PHP
     const productData = {
@@ -751,7 +751,6 @@ mysqli_close($conn);
       };
 
       if (addToCart(cartItem)) {
-        alert(`Added ${quantity}x ${cartItem.name} (${cartItem.size}) to cart!`);
         
         // Reset quantity
         quantity = 1;
@@ -784,16 +783,16 @@ mysqli_close($conn);
     cartOverlay.addEventListener('click', closeCart);
 
     // Checkout button
-    checkoutBtn.addEventListener('click', () => {
-      const cart = getCart();
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-      }
-      alert('Proceeding to checkout...');
-      // Here you would redirect to checkout page
-      // window.location.href = 'checkout.php';
-    });
+    // checkoutBtn.addEventListener('click', () => {
+    //   const cart = getCart();
+    //   if (cart.length === 0) {
+    //     alert('Your cart is empty!');
+    //     return;
+    //   }
+    //   alert('Proceeding to checkout...');
+    //   // Here you would redirect to checkout page
+    //   // window.location.href = 'checkout.php';
+    // });
 
     // Image modal
     mainImage.addEventListener('click', () => {
