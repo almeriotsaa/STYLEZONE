@@ -1,6 +1,5 @@
 <?php
 include "../config/connection.php";
-session_start();
 
 // Sementara hardcode dulu admin_id kalau belum pakai sistem login
 // Setelah login system aktif, hapus baris di bawah
