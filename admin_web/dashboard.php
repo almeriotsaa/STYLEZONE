@@ -229,7 +229,7 @@ $recentOrders = $conn->query($sql);
               <td>#<?= $row['order_id'] ?></td>
               <td><?= htmlspecialchars($row['customer']) ?></td>
               <td><?= date('M d, Y', strtotime($row['order_date'])) ?></td>
-              <td><?= number_format($row['total'], 0, ',', '.') ?> IDR</td>
+              <td>Rp <?= number_format((float)$row['total'], 0, ',', '.') ?></td>
               <td>
                 <span class="status <?= strtolower($row['status']) ?>">
                   <?= ucfirst($row['status']) ?>

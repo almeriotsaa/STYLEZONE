@@ -108,46 +108,187 @@ $result = mysqli_query($conn, $query);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <style>
-    /* CSS kamu tetap 100% sama persis */
+
     * {
       scroll-behavior: smooth;
       scrollbar-width: none;
     }
+    
     body {
       font-family: 'Poppins', sans-serif;
       background: #f4f5f7;
       margin: 0;
       padding: 0;
       display: flex;
-    }
+      min-height: 100vh; /* Pastikan body selalu setinggi layar */
+      overflow-x: hidden; /* Hindari scroll horizontal */
+}
+
+/* === Sidebar Tetap dan Stabil === */
     .sidebar {
       width: 260px;
       background: #1e1e1e;
       color: #fff;
       padding: 30px 20px;
       box-sizing: border-box;
+      flex-shrink: 0; /* Pastikan sidebar tidak mengecil saat zoom out */
+      position: sticky; /* Ganti dari fixed → sticky untuk lebih smooth */
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+}
+
+/* === Area Konten === */
+    .main {
+      flex: 1;
+      padding: 30px;
+      min-height: 100vh;
+      box-sizing: border-box;
+      background: #f4f5f7;
+      overflow-x: auto;
+}
+    .sidebar h2 {
+      margin-bottom: 40px;
+      font-size: 24px;        /* Ukuran huruf sesuai file Settings */
+      font-weight: 600;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;    /* Biar hurufnya agak renggang dan elegan */
+      text-align: left;       /* Rata kiri agar tetap konsisten */
     }
-    .sidebar h2 {margin-bottom: 40px;font-weight: 700;}
-    .nav-item {display:block;padding:10px 15px;border-radius:10px;color:#ccc;text-decoration:none;margin-bottom:10px;transition:0.3s;}
-    .nav-item.active,.nav-item:hover {background:rgba(255,255,255,0.1);color:#fff;}
-    .main {flex:1;padding:30px;}
-    .glass-box {background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:20px;padding:25px;box-shadow:0 4px 20px rgba(0,0,0,0.05);border:1px solid rgba(255,255,255,0.3);}
-    h1 {margin-bottom:20px;font-size:24px;color:#222;font-weight:bold;}
-    table {width:100%;border-collapse:collapse;margin-top:20px;table-layout:auto;}
-    th,td {padding:12px 15px;text-align:left;vertical-align:middle;font-size:14px;}
-    th {background:rgba(255,255,255,0.15);color:#333;font-weight:600;}
-    tr {border-bottom:1px solid rgba(0,0,0,0.05);}
-    tr:hover {background:rgba(255,255,255,0.25);}
-    .product-img {width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid rgba(0,0,0,0.1);}
-    .btn {padding:7px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:500;transition:0.2s;font-size:13px;}
-    .btn-add {background:#4CAF50;color:white;margin-bottom:15px;}
-    .btn-add:hover {background:#4CAF50;opacity:0.9;color:white;}
-    .btn-edit {background:#2196F3;color:white;}
-    .btn-delete {background:#f44336;color:white;}
-    .btn:hover {opacity:0.85;}
-    .action-buttons {display:flex;gap:8px;align-items:center;}
-    .size-container {display:flex;flex-wrap:wrap;gap:5px;}
-    .size-badge {background:rgba(0,0,0,0.05);color:#333;font-size:13px;font-weight:500;padding:5px 10px;border-radius:8px;}
+    .nav-item {
+      display: block;
+      padding: 14px 20px;
+      border-radius: 12px;
+      color: #ccc;
+      text-decoration: none;
+      margin-bottom: 6px;   /* lebih rapat tapi tetap lega */
+      transition: 0.3s;
+      font-size: 15px;
+      font-weight: 500;
+}
+
+    .nav-item.active,
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+}
+
+    .main {
+      flex: 1;
+      padding: 30px;
+}
+
+    .glass-box {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #222;
+      font-weight: bold;
+}
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: auto;
+}
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: left;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.15);
+      color: #333;
+      font-weight: 600;
+}
+
+    tr {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.25);
+}
+
+    .product-img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+    .btn {
+      padding: 7px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.2s;
+      font-size: 13px;
+}
+
+    .btn-add {
+      background: #4CAF50;
+      color: white;
+      margin-bottom: 15px;
+}
+
+    .btn-add:hover {
+      background: #4CAF50;
+      opacity: 0.9;
+      color: white;
+    }
+
+    .btn-edit {
+      background: #2196F3;
+      color: white;
+}
+
+    .btn-delete {
+      background: #f44336;
+      color: white;
+}
+
+    .btn:hover {
+      opacity: 0.85;
+}
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+}
+
+    .size-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+}
+
+    .size-badge {
+      background: rgba(0, 0, 0, 0.05);
+      color: #333;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 8px;
+}
   </style>
 </head>
 

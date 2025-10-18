@@ -155,12 +155,31 @@ $result = $conn->query($sql);
       font-size: 13px;
     }
 
-    .btn-add { background: #4CAF50; color: white; margin-bottom: 15px; }
-    .btn-edit { background: #2196F3; color: white; }
-    .btn-delete { background: #f44336; color: white; }
-    .btn:hover { opacity: 0.85; }
+    .btn-add {
+      background: #4CAF50;
+      color: white;
+      margin-bottom: 15px;
+    }
 
-    .action-buttons { display: flex; gap: 8px; align-items: center; }
+    .btn-edit {
+      background: #2196F3;
+      color: white;
+    }
+
+    .btn-delete {
+      background: #f44336;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+}
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+}
 
     .modal {
       display: none;
@@ -181,11 +200,22 @@ $result = $conn->query($sql);
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
-    .modal-content h2 { margin-top: 0; margin-bottom: 20px; font-size: 20px; }
+    .modal-content h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
 
-    .form-group { margin-bottom: 15px; }
+    .form-group {
+      margin-bottom: 15px;
+}
 
-    .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #333; }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+}
 
     .form-group input, .form-group select {
       width: 100%;
@@ -196,7 +226,11 @@ $result = $conn->query($sql);
       box-sizing: border-box;
     }
 
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-actions { 
+      display: flex; 
+      justify-content: flex-end; 
+      gap: 10px; 
+}
 
     .btn-cancel, .btn-submit {
       padding: 8px 16px;
@@ -209,8 +243,16 @@ $result = $conn->query($sql);
       height: 38px;
     }
 
-    .btn-cancel { background: #ccc; color: #333; }
-    .btn-submit { background: #4CAF50; color: #fff; }
+    .btn-cancel { 
+      background: #ccc; c
+      olor: #333; 
+}
+
+    .btn-submit { 
+      background: #4CAF50; 
+      color: #fff; 
+}
+
   </style>
 </head>
 <body>
