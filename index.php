@@ -1096,165 +1096,87 @@ $result = mysqli_query($conn, $query);
             }
         });
 
-        // Fungsi untuk memproses pembayaran
-        function processPayment() {
+        // Fungsi untuk memproses pembayaran - VERSI FIXED
+        async function processPayment() {
+            console.log('Starting payment process...');
+
             const cart = getCart();
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-
-            // Validasi berdasarkan metode pembayaran
-            let isValid = true;
-            let errorMessage = '';
-
-            switch (paymentMethod) {
-                case 'credit_card':
-                    const cardNumber = document.getElementById('cardNumber').value;
-                    const expiryDate = document.getElementById('expiryDate').value;
-                    const cvv = document.getElementById('cvv').value;
-                    const cardHolder = document.getElementById('cardHolder').value;
-
-                    if (!cardNumber || !expiryDate || !cvv || !cardHolder) {
-                        isValid = false;
-                        errorMessage = 'Please fill all credit card fields';
-                    }
-                    break;
-
-                case 'bank_transfer':
-                    if (!document.querySelector('.bank-option.selected')) {
-                        isValid = false;
-                        errorMessage = 'Please select a bank';
-                    }
-                    break;
-
-                case 'ewallet':
-                    if (!document.querySelector('.ewallet-option.selected')) {
-                        isValid = false;
-                        errorMessage = 'Please select an e-wallet';
-                    }
-                    break;
-            }
-
-            if (!isValid) {
-                alert(errorMessage);
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
                 return;
             }
 
-            // Simulasi proses pembayaran
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            console.log('Payment method:', paymentMethod);
+
+            // Validasi form
+            if (!validatePaymentForm(paymentMethod)) {
+                return;
+            }
+
+            // Siapkan data
+            const paymentData = {
+                cart_items: cart.map(item => ({
+                    product_id: parseInt(item.product_id),
+                    quantity: parseInt(item.quantity),
+                    price: parseFloat(item.price),
+                    name: item.name,
+                    size: item.size
+                })),
+                total_amount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+                payment_method: paymentMethod
+            };
+
+            console.log('Payment data to send:', paymentData);
+
+            // Tampilkan loading
             const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+            const originalText = confirmPaymentBtn.innerHTML;
             confirmPaymentBtn.disabled = true;
             confirmPaymentBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
 
-            // Simulasi delay proses
-            setTimeout(() => {
-                // Reset cart
-                saveCart([]);
+            try {
+                const response = await fetch('./config/process_payment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentData)
+                });
 
-                // Tutup modal
-                const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                paymentModal.hide();
+                const result = await response.json();
+                console.log('Payment response:', result);
 
-                // Tampilkan konfirmasi
-                // alert('Payment successful! Thank you for your order.');
+                if (result.success) {
+                    // SUCCESS
+                    saveCart([]); // Clear cart
+                    updateCartUI();
 
+                    // Close modal
+                    const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+                    paymentModal.hide();
+
+                    // Show success message
+                    showSuccessMessage(result.order_id, result.payment_id);
+
+                } else if (result.message === 'SESSION_EXPIRED') {
+                    // Handle session expired specifically
+                    alert('Your session has expired. Please login again.');
+                    window.location.reload();
+
+                } else {
+                    throw new Error(result.message);
+                }
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Payment failed: ' + error.message);
+            } finally {
                 // Reset button
                 confirmPaymentBtn.disabled = false;
-                confirmPaymentBtn.textContent = 'CONFIRM PAYMENT';
-
-            }, 2000);
-        }
-
-        // Fungsi untuk test session
-        async function testSession() {
-            try {
-                const response = await fetch('./config/test_session.php');
-                const data = await response.json();
-                console.log('Session Test:', data);
-                return data;
-            } catch (error) {
-                console.error('Session test failed:', error);
-                return null;
+                confirmPaymentBtn.innerHTML = originalText;
             }
         }
-
-        // Fungsi untuk memproses pembayaran - VERSI SIMPLE
-        // async function processPayment1() {
-        //     console.log('Starting payment process...');
-
-        //     const cart = getCart();
-        //     if (cart.length === 0) {
-        //         alert('Your cart is empty!');
-        //         return;
-        //     }
-
-        //     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-        //     console.log('Payment method:', paymentMethod);
-
-        //     // Validasi form
-        //     if (!validatePaymentForm(paymentMethod)) {
-        //         return;
-        //     }
-
-        //     // Siapkan data
-        //     const paymentData = {
-        //         cart_items: cart.map(item => ({
-        //             product_id: parseInt(item.product_id),
-        //             quantity: parseInt(item.quantity),
-        //             price: parseFloat(item.price),
-        //             name: item.name,
-        //             size: item.size
-        //         })),
-        //         total_amount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
-        //         payment_method: paymentMethod
-        //     };
-
-        //     console.log('Payment data:', paymentData);
-
-        //     // Tampilkan loading
-        //     const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
-        //     const originalText = confirmPaymentBtn.innerHTML;
-        //     confirmPaymentBtn.disabled = true;
-        //     confirmPaymentBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
-
-        //     try {
-        //         const response = await fetch('./config/process_payment.php', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify(paymentData)
-        //         });
-
-        //         const result = await response.json();
-        //         console.log('Payment response:', result);
-
-        //         if (result.success) {
-        //             // SUCCESS
-        //             saveCart([]); // Clear cart
-        //             updateCartUI();
-
-        //             // Close modal
-        //             const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-        //             paymentModal.hide();
-
-        //             // Show success message
-        //             showSuccessMessage(result.order_id, result.payment_id);
-        //         } else {
-        //             // Jika gagal karena session, redirect ke login
-        //             if (result.message.includes('login') || result.message.includes('session')) {
-        //                 alert('Session expired. Please login again.');
-        //                 window.location.reload();
-        //             } else {
-        //                 throw new Error(result.message);
-        //             }
-        //         }
-        //     } catch (error) {
-        //         console.error('Payment error:', error);
-        //         alert('Payment failed: ' + error.message);
-        //     } finally {
-        //         // Reset button
-        //         confirmPaymentBtn.disabled = false;
-        //         confirmPaymentBtn.innerHTML = originalText;
-        //     }
-        // }
 
         // Fungsi validasi form
         function validatePaymentForm(paymentMethod) {

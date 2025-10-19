@@ -216,56 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
       </div>
 
       <div class="divider"></div>
-
-      <!-- Store Preferences -->
-      <div class="form-section">
-        <h2>🏬 Store Preferences</h2>
-        <form>
-          <label for="store-name">Store Name</label>
-          <input type="text" id="store-name" placeholder="Stylezone">
-
-          <label for="currency">Currency</label>
-          <select id="currency">
-            <option>IDR (Rp)</option>
-            <option>USD ($)</option>
-            <option>EUR (€)</option>
-          </select>
-
-          <label for="timezone">Timezone</label>
-          <select id="timezone">
-            <option>Asia/Jakarta (GMT+7)</option>
-            <option>Asia/Singapore (GMT+8)</option>
-            <option>Europe/London (GMT+0)</option>
-          </select>
-
-          <button type="submit" class="btn-save">Save Preferences</button>
-        </form>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Notification Settings -->
-      <div class="form-section">
-        <h2>🔔 Notification Settings</h2>
-        <form>
-          <label for="notif">Email Notifications</label>
-          <select id="notif">
-            <option>Enabled</option>
-            <option>Disabled</option>
-          </select>
-
-          <label for="report">Weekly Sales Report</label>
-          <select id="report">
-            <option>Enabled</option>
-            <option>Disabled</option>
-          </select>
-
-          <button type="submit" class="btn-save">Save Notifications</button>
-        </form>
-      </div>
-
     </div>
-  </div>
 
 </body>
 

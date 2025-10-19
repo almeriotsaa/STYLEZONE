@@ -18,13 +18,15 @@ $recentOrders = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Stylezone Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    html,
+    body {
       height: 100%;
       margin: 0;
       padding: 0;
@@ -91,7 +93,7 @@ $recentOrders = $conn->query($sql);
 
     .nav-item.active,
     .nav-item:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
     }
 
@@ -107,7 +109,7 @@ $recentOrders = $conn->query($sql);
       background: #fff;
       border-radius: 20px;
       padding: 25px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       margin-bottom: 25px;
     }
 
@@ -131,7 +133,7 @@ $recentOrders = $conn->query($sql);
       border-radius: 20px;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
     .card h2 {
@@ -151,23 +153,24 @@ $recentOrders = $conn->query($sql);
       border-collapse: collapse;
     }
 
-    th, td {
+    th,
+    td {
       padding: 12px 15px;
       text-align: left;
     }
 
     th {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       color: #333;
       font-weight: 600;
     }
 
     tr {
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     tr:hover {
-      background: rgba(0,0,0,0.02);
+      background: rgba(0, 0, 0, 0.02);
     }
 
     .status {
@@ -178,17 +181,27 @@ $recentOrders = $conn->query($sql);
     }
 
     .status.completed {
-      background: rgba(46, 204, 113, 0.2);
-      color: #27ae60;
+      background: #c8e6c9;
+      color: #2e7d32;
     }
 
     .status.pending {
-      background: rgba(241, 196, 15, 0.2);
-      color: #f39c12;
+      background: #fff3cd;
+      color: #856404;
     }
-    
+
+    .status.cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .status.processing {
+      background: #cce7ff;
+      color: #0066cc;
+    }
   </style>
 </head>
+
 <body>
   <div class="sidebar">
     <div>
@@ -207,9 +220,18 @@ $recentOrders = $conn->query($sql);
     <div class="glass-box">
       <h1>Dashboard Overview</h1>
       <div class="card-container">
-        <div class="card"><h2>Total Products</h2><p><?= $totalProducts ?></p></div>
-        <div class="card"><h2>Users</h2><p><?= $totalUsers ?></p></div>
-        <div class="card"><h2>Total Orders</h2><p><?= $totalOrders ?></p></div>
+        <div class="card">
+          <h2>Total Products</h2>
+          <p><?= $totalProducts ?></p>
+        </div>
+        <div class="card">
+          <h2>Users</h2>
+          <p><?= $totalUsers ?></p>
+        </div>
+        <div class="card">
+          <h2>Total Orders</h2>
+          <p><?= $totalOrders ?></p>
+        </div>
       </div>
 
       <h1>Recent Orders</h1>
@@ -250,4 +272,5 @@ $recentOrders = $conn->query($sql);
     }
   </script>
 </body>
+
 </html>
