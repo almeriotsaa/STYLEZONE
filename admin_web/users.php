@@ -16,35 +16,16 @@ if (isset($_GET['delete'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
   $name  = $conn->real_escape_string($_POST['name']);
   $email = $conn->real_escape_string($_POST['email']);
-   $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
-
-    
+  $pass  = $_POST['password'];
+  $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
   $role  = "admin";
 
   $sql = "INSERT INTO users (name, email, password, role) 
-            VALUES ('$name', '$email', '$hashed_pass', '$role')";
+          VALUES ('$name', '$email', '$hashed_pass', '$role')";
   if ($conn->query($sql)) {
     echo "<script>alert('User berhasil ditambahkan!'); window.location='users.php';</script>";
   } else {
     echo "<script>alert('Gagal menambah user: " . $conn->error . "');</script>";
-  }
-}
-
-// ===== Edit User =====
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
-  $name  = $conn->real_escape_string($_POST['name']);
-  $email = $conn->real_escape_string($_POST['email']);
-  $role  = $conn->real_escape_string($_POST['role']);
-  $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
-
-    $sql = "INSERT INTO users (name, email, password, role) 
-            VALUES ('$name', '$email', '$hashed_pass', '$role')";
-
-  $sql = "UPDATE users SET name='$name', email='$email', role='$role' WHERE user_id='$id'";
-  if ($conn->query($sql)) {
-    echo "<script>alert('Data user berhasil diperbarui!'); window.location='users.php';</script>";
-  } else {
-    echo "<script>alert('Gagal memperbarui user: " . $conn->error . "');</script>";
   }
 }
 
@@ -106,7 +87,6 @@ $result = $conn->query($sql);
     .glass-box {
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 25px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
@@ -128,7 +108,6 @@ $result = $conn->query($sql);
     th, td {
       padding: 12px 15px;
       text-align: left;
-      vertical-align: middle;
     }
 
     th {
@@ -161,11 +140,6 @@ $result = $conn->query($sql);
       margin-bottom: 15px;
     }
 
-    .btn-edit {
-      background: #2196F3;
-      color: white;
-    }
-
     .btn-delete {
       background: #f44336;
       color: white;
@@ -173,13 +147,13 @@ $result = $conn->query($sql);
 
     .btn:hover {
       opacity: 0.85;
-}
+    }
 
     .action-buttons {
       display: flex;
       gap: 8px;
       align-items: center;
-}
+    }
 
     .modal {
       display: none;
@@ -200,37 +174,30 @@ $result = $conn->query($sql);
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
-    .modal-content h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 20px;
-    }
-
     .form-group {
       margin-bottom: 15px;
-}
+    }
 
     .form-group label {
       display: block;
       margin-bottom: 6px;
       font-size: 14px;
       color: #333;
-}
+    }
 
-    .form-group input, .form-group select {
+    .form-group input {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-family: 'Poppins', sans-serif;
-      box-sizing: border-box;
     }
 
     .modal-actions { 
       display: flex; 
       justify-content: flex-end; 
       gap: 10px; 
-}
+    }
 
     .btn-cancel, .btn-submit {
       padding: 8px 16px;
@@ -246,13 +213,12 @@ $result = $conn->query($sql);
     .btn-cancel { 
       background: #ccc;
       color: #333; 
-}
+    }
 
     .btn-submit { 
       background: #4CAF50; 
       color: #fff; 
-}
-
+    }
   </style>
 </head>
 <body>
@@ -291,8 +257,6 @@ $result = $conn->query($sql);
                 <td><?= ucfirst($row['role']) ?></td>
                 <td>
                   <div class="action-buttons">
-                    <button class="btn btn-edit" 
-                      onclick="openEditModal(<?= $row['user_id'] ?>, '<?= htmlspecialchars($row['name']) ?>', '<?= htmlspecialchars($row['email']) ?>', '<?= $row['role'] ?>')">Edit</button>
                     <button class="btn btn-delete" onclick="confirmDelete(<?= $row['user_id'] ?>)">Delete</button>
                   </div>
                 </td>
@@ -322,22 +286,6 @@ $result = $conn->query($sql);
     </div>
   </div>
 
-  <!-- Modal Edit -->
-  <div class="modal" id="editModal">
-    <div class="modal-content">
-      <h2>Edit User</h2>
-      <form method="POST">
-        <div class="form-group"><label>ID</label><input type="number" name="user_id" id="edit_id" readonly></div>
-        <div class="form-group"><label>Name</label><input type="text" name="name" id="edit_name" required></div>
-        <div class="form-group"><label>Email</label><input type="email" name="email" id="edit_email" required></div>
-        <div class="modal-actions">
-          <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
-          <button type="submit" name="edit_user" class="btn-submit">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <script>
     function closeModal(id) {
       document.getElementById(id).style.display = 'none';
@@ -346,14 +294,6 @@ $result = $conn->query($sql);
     document.getElementById('openModalAdd').onclick = () => {
       document.getElementById('addModal').style.display = 'flex';
     };
-
-    function openEditModal(id, name, email, role) {
-      document.getElementById('editModal').style.display = 'flex';
-      document.getElementById('edit_id').value = id;
-      document.getElementById('edit_name').value = name;
-      document.getElementById('edit_email').value = email;
-      document.getElementById('edit_role').value = role;
-    }
 
     window.onclick = function(e) {
       if (e.target.classList.contains('modal')) e.target.style.display = 'none';
